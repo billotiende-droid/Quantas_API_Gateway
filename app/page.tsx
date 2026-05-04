@@ -56,7 +56,14 @@ return (
         </div>
         ))}
       </div>
-      
+      {/* Stats Footer */}
+      <footer className='mt-10 p-6 bg-slate-900 rounded-[2rem] text-white'>
+        <p className='text-slate-400 text-xs mb-2'>Market Indicators</p>
+        <div className='flex justify-between font-mono text-sm'>
+          <span>BTC/USD</span>
+          <span className='text-green-400'>↑ {data?.rates?.BTC} </span>
+        </div>
+      </footer>
     </div>
   </main>
 );}
