@@ -37,9 +37,26 @@ return (
           <span className='text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold'>CACHED</span>
         )}
       </div>
-     
+      {/* Wallet Cards */}
+      <div className='space-y-4'>
+        {loading ? [1, 2].map(i => <div key={i} className='h-32 bg-slate-200 animate-pulse rounded-3xl' />):
+        data?.data?.map((wallet: Wallet, i:number) => (
+          <div key={i} className='bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-white relative overflow-hidden group transition-all hover:shadow-2xl'>
+            <div className='flex justify-between items-start'>
+              <div>
+                <p className='text-slate-400 text-xs font-bold uppercase mb-1'>{wallet.currency} Assets </p>
+                <p className='text-4xl font-mono font-bold tracking-lighter'>
+                  {wallet.balance.toLocaleString()}
+                </p>
+              </div>
+              <div className='bg-slate-100 p-3 rounded-2xl group-hover:bg-blue-50 transition-colors'>
+                <span className='font-bold text-blue-600'>{wallet.currency} </span>
+            </div>
+          </div>
+        </div>
+        ))}
+      </div>
+      
     </div>
   </main>
-)
-
- }
+);}
