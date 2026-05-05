@@ -38,4 +38,21 @@ def get_db_data(user_id: int):
         rows = cursor.fetchall()
     finally:
         conn.close()    
+    return [dict(row) for row in rows]   
+
+# IMPROVEMENT : Pydantic Validation
+# This ensures "Money" stays "Money" (No weird strings) 
+class WalletSchema(BaseModel):
+    currency : str
+    balance : float
+    user : str
+
+class SettlementResponse(BaseModel):
+    status : str
+    data : List[WalletSchema]
+    rates : Dict[str, float]
+    cached : bool
+# Caching logic
+# Store rates in memory so we dont fetch them every time (Fast and Cheap)
+rate_cache = {"data": None, "expiry": 0}    
 
