@@ -70,3 +70,21 @@ async def fetch_market_rates():
     rate_cache["expiry"] = current_time + 60
     return new_rates, False  # Return new data and indicate it's not from cache
 
+@app.get("/api/v1/settlement/{user_id}", response_model=SettlementResponse)
+async def get_settlement(user_id: int):
+    #Concurrency : Fetch user data and market rates at the same time while reading settlement data from the database
+    rates_task = asyncio.create_task(fetch_market_rates)
+
+    # SQL: get real data from our JOIN
+    db_data = get_db_data(user_id)
+    rates, cached = await rates_task
+
+    if not db_data:
+        raise HTTPException(status_code=404, detail="Settlement data not found")
+    
+    return {
+        "status": "success",
+        "data": db_data,
+        "rates": rates,
+        "cached": cached
+    }
