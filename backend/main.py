@@ -56,3 +56,17 @@ class SettlementResponse(BaseModel):
 # Store rates in memory so we dont fetch them every time (Fast and Cheap)
 rate_cache = {"data": None, "expiry": 0}    
 
+async def fetch_market_rates():
+    current_time = time.time()
+    if rate_cache["data"] and current_time < rate_cache["expiry"]:
+        return rate_cache["data"], True  # Return cached data and indicate it's from cache
+    
+    # simulate fetching from external API (replace with real API call)
+    await asyncio.sleep(1)  # Simulate network delay
+    new_rates = {"USD": 1.0, "BTC": 0.000015}  # Mocked rates
+
+    # Cached for 60 seconds
+    rate_cache["data"] = new_rates
+    rate_cache["expiry"] = current_time + 60
+    return new_rates, False  # Return new data and indicate it's not from cache
+
