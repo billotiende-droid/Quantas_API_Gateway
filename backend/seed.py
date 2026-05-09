@@ -11,3 +11,14 @@ def init_db():
         username TEXT NOT NULL
     )
     """)
+
+    # 2. Create Wallets Table (The Relationship)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS wallets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        currency TEXT NOT NULL,
+        balance REAL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+    """)
