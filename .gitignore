@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -12,6 +13,24 @@
 
 # testing
 /coverage
+
+/.venvs
+/venv
+venv/
+backend/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python dependency manifests for this learning/demo backend
+backend/Pipfile
+backend/Pipfile.lock
+backend/requirements.txt
+
+# local database files
+*.db
 
 # next.js
 /.next/
@@ -39,3 +58,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local editor / agent state
+.codex
+.codex/
+.vscode
+.vscode/
+
+# generated/copied backend app artifacts
+backend/b_*/
