@@ -9,17 +9,36 @@ interface Wallet {
   user: string;
 }
 
+interface SettlementData {
+  status: string;
+  data: Wallet[];
+  rates: Record<string, number>;
+  cached: boolean;
+}
+
 export default function QuantasDashboard () {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<SettlementData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
 
 useEffect (() => {
   const load = async () => {
-    const res = await fetch("http://localhost:8000/api/vi/settlement/1");
-    const json = await res.json();
-    setData(json);
-    setLoading(false);
+    try {
+      const res = await fetch("http://localhost:8000/api/v1/settlement/1");
+
+      if (!res.ok) {
+        throw new Error(`API returned ${res.status}`);
+      }
+
+      const json = await res.json();
+      setData(json);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to load settlement data");
+    } finally {
+      setLoading(false);
+    }
   };
   load()
 }, []); 
@@ -39,7 +58,13 @@ return (
       </div>
       {/* Wallet Cards */}
       <div className='space-y-4'>
-        {loading ? [1, 2].map(i => <div key={i} className='h-32 bg-slate-200 animate-pulse rounded-3xl' />):
+        {loading ? [1, 2, 3, 4].map(i => <div key={i} className='h-32 bg-slate-200 animate-pulse rounded-3xl' />):
+        error ? (
+          <div className='bg-red-50 border border-red-200 text-red-700 p-6 rounded-[2rem]'>
+            <p className='text-xs font-bold uppercase mb-2'>API Connection Failed</p>
+            <p className='text-sm'>{error}. Start the FastAPI server on port 8000 and refresh.</p>
+          </div>
+        ) :
         data?.data?.map((wallet: Wallet, i:number) => (
           <div key={i} className='bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-white relative overflow-hidden group transition-all hover:shadow-2xl'>
             <div className='flex justify-between items-start'>
