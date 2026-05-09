@@ -8,13 +8,18 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-DATABSE_PATH = Path(__file__).with_name("quantas.db")
+DATABASE_PATH = Path(__file__).with_name("quantas.db")
 
 app = FastAPI(title="Quantas API Gateway")
 
 app.add_middleware (
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,7 +27,7 @@ app.add_middleware (
 
 # database connection helper
 def get_db_data(user_id: int):
-    conn = sqlite3.connect(DATABSE_PATH)
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row  # Enable access columns by name
     try:
         cursor = conn.cursor()
@@ -73,7 +78,7 @@ async def fetch_market_rates():
 @app.get("/api/v1/settlement/{user_id}", response_model=SettlementResponse)
 async def get_settlement(user_id: int):
     #Concurrency : Fetch user data and market rates at the same time while reading settlement data from the database
-    rates_task = asyncio.create_task(fetch_market_rates)
+    rates_task = asyncio.create_task(fetch_market_rates())
 
     # SQL: get real data from our JOIN
     db_data = get_db_data(user_id)
